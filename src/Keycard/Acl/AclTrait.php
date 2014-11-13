@@ -41,17 +41,22 @@ trait AclTrait
 
 		if ( is_callable( array( $this, 'roles' ) ) )
 		{
-			$roles = $this->roles()->get();
+			$roles = $this->roles();
 
-			foreach ( $roles AS $role )
+			if ( is_callable( array( $roles, 'get' ) ) )
 			{
-				$rolePermissions = $role->permissions;
+				$roles = $roles->get();
 
-				foreach ( $rolePermissions AS $rolePermission => $rolePermissionAllowed )
+				foreach ( $roles AS $role )
 				{
-					if ( empty( $grantedPermissions[ $rolePermission ] ) )
+					$rolePermissions = $role->permissions;
+
+					foreach ( $rolePermissions AS $rolePermission => $rolePermissionAllowed )
 					{
-						$grantedPermissions[ $rolePermission ] = $rolePermissionAllowed;
+						if ( empty( $grantedPermissions[ $rolePermission ] ) )
+						{
+							$grantedPermissions[ $rolePermission ] = $rolePermissionAllowed;
+						}
 					}
 				}
 			}
